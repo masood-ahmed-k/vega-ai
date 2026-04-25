@@ -152,17 +152,17 @@ class TestMemory:
             kg_path = f.name
         try:
             kg = KnowledgeGraph(persist_path=kg_path)
-            kg.add_entity("Masood", "person", {"role": "developer"})
+            kg.add_entity("Hunter", "person", {"role": "developer"})
             kg.add_entity("VEGA", "project", {"type": "AI"})
-            kg.add_relation("Masood", "VEGA", "created")
+            kg.add_relation("Hunter", "VEGA", "created")
 
-            result = kg.query_entity("Masood")
+            result = kg.query_entity("Hunter")
             assert result is not None
-            assert result["entity"] == "Masood"
+            assert result["entity"] == "Hunter"
             assert len(result["relations"]) >= 1
 
-            search = kg.search("masood")
-            assert "Masood" in search
+            search = kg.search("hunter")
+            assert "Hunter" in search
         finally:
             os.unlink(kg_path)
 

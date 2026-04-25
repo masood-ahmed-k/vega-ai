@@ -4,7 +4,7 @@
 system:
   name: "VEGA"
   version: "1.2.0"
-  user: "Masood"
+  user: "Hunter"        # Change this to your name
   log_level: "INFO"
   data_dir: "./data"
 

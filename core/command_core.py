@@ -252,6 +252,7 @@ class VEGACore:
         return {
             "name": "VEGA AI",
             "version": self.config.get("system", {}).get("version", "1.0.0"),
+            "user": self.config.get("system", {}).get("user", "Hunter"),
             "uptime_seconds": round(uptime),
             "agents": self.registry.list_agents(),
             "skills_loaded": len(self.skill_loader.list_loaded()),

@@ -877,9 +877,9 @@
   <div class="panel">
     <div class="hunter-card">
       <div class="hunter-rank">RANK: S // ARCHITECT</div>
-      <div class="hunter-portrait"><span class="initial">M</span></div>
-      <div class="hunter-name">MASOOD</div>
-      <div class="hunter-title">"The Creator"</div>
+      <div class="hunter-portrait"><span class="initial" id="hunterInitial">?</span></div>
+      <div class="hunter-name" id="hunterName">HUNTER</div>
+      <div class="hunter-title" id="hunterTitle">"The Creator"</div>
       <div class="level-display">LEVEL <span class="num" id="lvl">7</span></div>
       <div class="xp-bar"><div class="xp-fill" id="xpFill" style="width:48%"></div></div>
       <div class="xp-text" id="xpText">0 / 100 XP</div>
@@ -919,7 +919,7 @@
         <div style="text-align:center; line-height: 1.8;">
           System initialized successfully.<br>
           All <span style="color:var(--cyan); font-weight:600;">12 Shadow Soldiers</span> have been summoned.<br>
-          Ready to receive your commands, <span style="color:var(--gold);">Hunter Masood</span>.
+          Ready to receive your commands, <span style="color:var(--gold);" id="hunterGreeting">Hunter</span>.
         </div>
       </div>
     </div>
@@ -1171,6 +1171,16 @@
       const resp = await fetch('/api/status');
       const data = await resp.json();
       updateSystemStatus(data);
+      // Update hunter name from config
+      if (data.user) {
+        const uName = data.user.toUpperCase();
+        const el = document.getElementById('hunterName');
+        const ini = document.getElementById('hunterInitial');
+        const greet = document.getElementById('hunterGreeting');
+        if (el) el.textContent = uName;
+        if (ini) ini.textContent = data.user.charAt(0).toUpperCase();
+        if (greet) greet.textContent = 'Hunter ' + data.user;
+      }
       if (data.level !== undefined) {
         document.getElementById('lvl').textContent = data.level;
         const levelXp = (data.xp || 0) % 100;
