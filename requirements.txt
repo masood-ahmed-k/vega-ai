@@ -1,0 +1,46 @@
+pyyaml
+structlog
+fastapi
+uvicorn
+ollama
+chromadb
+httpx>=0.27.0,<0.28.0
+pydantic
+jinja2
+aiofiles
+psutil
+networkx
+pyautogui
+Pillow
+mss
+apscheduler
+watchdog
+aiohttp
+numpy
+markdown-it-py
+pygments
+pyperclip
+python-dotenv
+
+# ─── Optional: Local Video/Image generation (needs GPU) ──────────
+# Install with: install_video_deps.bat  (or manually below)
+# torch>=2.1.0
+# diffusers>=0.31.0
+# transformers>=4.44.0
+# accelerate>=0.30.0
+# sentencepiece
+# imageio[ffmpeg]
+# opencv-python
+
+# ─── Optional: Autonomous browser (Tier 2) ───────────────────────
+# Install with: install_browser.bat
+# playwright>=1.45.0
+
+# ─── Optional: Voice (free) ──────────────────────────────────────
+# SpeechRecognition
+# openai-whisper
+# pyttsx3
+# pyaudio
+
+# ─── Optional: MCP server (Tier 2d) ──────────────────────────────
+# mcp>=1.0.0

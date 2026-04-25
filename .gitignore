@@ -1,0 +1,23 @@
+# VEGA AI
+.env
+__pycache__/
+*.pyc
+*.pyo
+data/
+logs/
+snapshots/
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+*.db
+*.log
+node_modules/
+.claude/
+.agent/
+*.pdf
+skills/generated/*.py
+!skills/generated/__init__.py

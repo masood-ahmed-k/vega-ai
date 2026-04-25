@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VEGA // SYSTEM</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;600;700&family=Share+Tech+Mono&display=swap');
+
+  :root {
+    --bg: #000;
+    --panel: rgba(5, 10, 25, 0.85);
+    --cyan: #00d9ff;
+    --cyan-dim: #0088aa;
+    --cyan-glow: rgba(0, 217, 255, 0.6);
+    --white: #e8f4ff;
+    --gray: #5a6a80;
+    --purple: #b967ff;
+    --gold: #ffcc00;
+    --green: #00ff9d;
+    --border: rgba(0, 217, 255, 0.4);
+    --glow: 0 0 20px rgba(0, 217, 255, 0.5);
+    --glow-strong: 0 0 30px rgba(0, 217, 255, 0.8), 0 0 60px rgba(0, 217, 255, 0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Rajdhani', sans-serif;
+    background: #000;
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0, 217, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 217, 255, 0.04) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none; z-index: 0;
+    animation: gridShift 40s linear infinite;
+  }
+
+  @keyframes gridShift { from { background-position: 0 0; } to { background-position: 50px 50px; } }
+
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent 0, transparent 3px, rgba(0, 217, 255, 0.02) 3px, rgba(0, 217, 255, 0.02) 4px);
+    pointer-events: none; z-index: 9999;
+  }
+
+  .vignette {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 1;
+    background: radial-gradient(ellipse at center, transparent 30%, rgba(0, 0, 0, 0.7) 100%);
+    box-shadow: inset 0 0 200px rgba(0, 217, 255, 0.08);
+  }
+
+  .header {
+    position: relative; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(0, 217, 255, 0.08) 0%, transparent 100%);
+  }
+
+  .brand { display: flex; align-items: center; gap: 20px; }
+
+  .brand-hex {
+    width: 42px; height: 42px;
+    background: var(--cyan);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    box-shadow: 0 0 25px var(--cyan-glow);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .brand-hex::after {
+    content: 'V';
+    font-family: 'Orbitron'; font-size: 20px; font-weight: 900;
+    color: #000;
+  }
+
+  .brand-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 28px; font-weight: 900;
+    letter-spacing: 10px;
+    color: var(--cyan);
+    text-shadow: 0 0 20px var(--cyan-glow);
+  }
+  .brand-text .slash { color: var(--gray); margin: 0 12px; font-weight: 300; }
+  .brand-text .sys { color: var(--white); font-size: 18px; letter-spacing: 6px; }
+
+  .brand-sub {
+    display: block;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px; letter-spacing: 3px;
+    color: var(--cyan-dim); margin-top: 2px;
+  }
+
+  .status-bar {
+    display: flex; align-items: center; gap: 24px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px; letter-spacing: 2px;
+    color: var(--gray);
+  }
+
+  .status-bar .online {
+    color: var(--green);
+    text-shadow: 0 0 10px var(--green);
+  }
+
+  .status-bar .online::before {
+    content: '*'; margin-right: 6px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  .main {
+    position: relative; z-index: 5;
+    display: grid;
+    grid-template-columns: 340px 1fr 340px;
+    gap: 16px; padding: 16px;
+    height: calc(100vh - 80px);
+  }
+
+  .panel {
+    position: relative;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 20px;
+    overflow-y: auto;
+    backdrop-filter: blur(4px);
+  }
+
+  .panel::before, .panel::after {
+    content: '';
+    position: absolute;
+    width: 16px; height: 16px;
+    border-color: var(--cyan); border-style: solid;
+  }
+  .panel::before {
+    top: -1px; left: -1px;
+    border-width: 2px 0 0 2px;
+    box-shadow: -2px -2px 8px var(--cyan-glow);
+  }
+  .panel::after {
+    bottom: -1px; right: -1px;
+    border-width: 0 2px 2px 0;
+    box-shadow: 2px 2px 8px var(--cyan-glow);
+  }
+
+  .panel-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--cyan);
+    text-shadow: 0 0 10px var(--cyan-glow);
+    margin-bottom: 18px; padding-bottom: 10px;
+    position: relative;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .panel-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 1px;
+    background: linear-gradient(90deg, var(--cyan) 0%, transparent 100%);
+  }
+  .panel-title::before {
+    content: '>'; color: var(--cyan); font-size: 12px;
+  }
+
+  .hunter-card {
+    text-align: center;
+    padding: 24px 0 20px;
+    border-bottom: 1px solid rgba(0, 217, 255, 0.15);
+    margin-bottom: 20px;
+  }
+
+  .hunter-rank {
+    font-family: 'Orbitron';
+    font-size: 9px; letter-spacing: 4px;
+    color: var(--gold);
+    margin-bottom: 8px;
+    text-shadow: 0 0 10px rgba(255, 204, 0, 0.6);
+  }
+
+  .hunter-portrait {
+    width: 90px; height: 90px;
+    margin: 0 auto 16px;
+    position: relative;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: linear-gradient(135deg, var(--cyan-dim) 0%, var(--purple) 100%);
+    display: flex; align-items: center; justify-content: center;
+    filter: drop-shadow(0 0 20px var(--cyan-glow));
+  }
+
+  .hunter-portrait::after {
+    content: '';
+    position: absolute; inset: 3px;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: var(--bg);
+  }
+
+  .hunter-portrait .initial {
+    position: relative; z-index: 2;
+    font-family: 'Orbitron';
+    font-size: 36px; font-weight: 900;
+    color: var(--cyan);
+    text-shadow: 0 0 20px var(--cyan-glow);
+  }
+
+  .hunter-name {
+    font-family: 'Orbitron';
+    font-size: 22px; font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--white);
+  }
+
+  .hunter-title {
+    font-family: 'Rajdhani';
+    font-size: 12px; font-weight: 500;
+    font-style: italic; letter-spacing: 2px;
+    color: var(--gray); margin-top: 4px;
+  }
+
+  .level-display {
+    font-family: 'Orbitron';
+    font-size: 13px; letter-spacing: 3px;
+    color: var(--cyan); margin: 14px 0 6px;
+  }
+  .level-display .num {
+    font-size: 20px; color: var(--white);
+    text-shadow: 0 0 15px var(--cyan-glow);
+  }
+
+  .xp-bar {
+    width: 80%; margin: 0 auto;
+    height: 4px;
+    background: rgba(0, 217, 255, 0.1);
+    border: 1px solid var(--border);
+    position: relative; overflow: hidden;
+  }
+  .xp-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--cyan) 0%, var(--purple) 100%);
+    box-shadow: 0 0 10px var(--cyan-glow);
+    position: relative;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .xp-fill::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    animation: shimmer 2s linear infinite;
+  }
+  @keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+
+  .xp-text {
+    font-family: 'Share Tech Mono';
+    font-size: 10px; color: var(--gray);
+    margin-top: 6px; letter-spacing: 2px;
+  }
+
+  .stats-block { margin: 24px 0; }
+
+  .stat-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px dotted rgba(0, 217, 255, 0.15);
+    font-family: 'Share Tech Mono'; font-size: 12px;
+  }
+  .stat-row .label { color: var(--cyan-dim); letter-spacing: 2px; font-size: 11px; }
+  .stat-row .val {
+    color: var(--white); font-weight: 600;
+    text-shadow: 0 0 8px var(--cyan-glow);
+  }
+
+  .army-list { list-style: none; }
+
+  .soldier {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center; gap: 10px;
+    padding: 8px 10px; margin-bottom: 4px;
+    background: rgba(0, 217, 255, 0.02);
+    border-left: 2px solid transparent;
+    transition: all 0.2s;
+    cursor: pointer;
+    font-family: 'Rajdhani'; font-weight: 500;
+  }
+  .soldier:hover {
+    background: rgba(0, 217, 255, 0.08);
+    border-left-color: var(--cyan);
+    box-shadow: inset 0 0 20px rgba(0, 217, 255, 0.1);
+  }
+  .soldier.active {
+    background: rgba(0, 217, 255, 0.1);
+    border-left-color: var(--green);
+  }
+
+  .soldier-icon {
+    width: 18px; height: 18px;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: var(--gray);
+    flex-shrink: 0;
+  }
+  .soldier.active .soldier-icon {
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .soldier-name {
+    font-size: 13px; letter-spacing: 1px;
+    color: var(--white);
+  }
+  .soldier-power {
+    font-family: 'Share Tech Mono'; font-size: 11px;
+    color: var(--cyan);
+  }
+
+  .cmd-panel { display: flex; flex-direction: column; }
+
+  .cmd-log {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 8px;
+    font-family: 'Rajdhani';
+  }
+
+  .msg {
+    margin-bottom: 20px;
+    animation: appearIn 0.5s ease-out;
+  }
+
+  @keyframes appearIn {
+    from { opacity: 0; transform: translateY(8px); filter: blur(4px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+  }
+
+  .msg-sender {
+    font-family: 'Orbitron';
+    font-size: 11px; letter-spacing: 3px;
+    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .msg-sender::before { content: '>'; font-size: 14px; }
+  .msg-sender.user { color: var(--green); }
+  .msg-sender.vega { color: var(--cyan); text-shadow: 0 0 10px var(--cyan-glow); }
+  .msg-sender.system { color: var(--purple); }
+
+  .msg-content {
+    font-size: 15px; line-height: 1.7;
+    color: var(--white);
+    white-space: pre-wrap; word-break: break-word;
+    padding-left: 14px;
+    border-left: 1px solid rgba(0, 217, 255, 0.2);
+  }
+
+  .msg-content code {
+    background: rgba(0, 217, 255, 0.15);
+    padding: 2px 8px;
+    border: 1px solid rgba(0, 217, 255, 0.3);
+    font-family: 'Share Tech Mono';
+    font-size: 13px; color: var(--cyan);
+  }
+
+  .system-popup {
+    margin: 24px auto;
+    max-width: 70%;
+    border: 2px solid var(--cyan);
+    background: rgba(0, 30, 50, 0.9);
+    padding: 20px 24px;
+    position: relative;
+    box-shadow: var(--glow-strong);
+    animation: popupIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes popupIn {
+    from { opacity: 0; transform: scale(0.8); filter: blur(8px); }
+    50% { filter: blur(0); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .system-popup::before, .system-popup::after {
+    content: '';
+    position: absolute;
+    width: 20px; height: 20px;
+    border-color: var(--cyan); border-style: solid;
+  }
+  .system-popup::before { top: -2px; left: -2px; border-width: 3px 0 0 3px; }
+  .system-popup::after { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; }
+
+  .system-popup-title {
+    font-family: 'Orbitron';
+    font-size: 14px; font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--cyan);
+    text-shadow: 0 0 15px var(--cyan-glow);
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .cmd-input-zone {
+    margin-top: 16px; padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 12px;
+    position: relative;
+  }
+
+  .cmd-input-zone::before {
+    content: '>>';
+    position: absolute;
+    left: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--cyan);
+    font-size: 14px;
+    font-family: 'Share Tech Mono';
+    z-index: 2; pointer-events: none;
+    text-shadow: 0 0 10px var(--cyan-glow);
+  }
+
+  .cmd-input {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border);
+    padding: 14px 14px 14px 40px;
+    color: var(--white);
+    font-family: 'Rajdhani';
+    font-size: 15px; font-weight: 500;
+    letter-spacing: 1px;
+    outline: none;
+    transition: all 0.3s;
+  }
+
+  .cmd-input:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.3), inset 0 0 20px rgba(0, 217, 255, 0.05);
+  }
+
+  .cmd-input::placeholder { color: var(--gray); letter-spacing: 2px; }
+
+  .cmd-btn {
+    background: transparent;
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    font-family: 'Orbitron';
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 3px;
+    padding: 0 28px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .cmd-btn:hover {
+    background: var(--cyan); color: #000;
+    box-shadow: var(--glow-strong);
+  }
+
+  .metric-box {
+    background: rgba(0, 217, 255, 0.03);
+    border: 1px solid var(--border);
+    padding: 14px 16px; margin-bottom: 12px;
+    position: relative;
+  }
+
+  .metric-box::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0;
+    width: 3px; height: 100%;
+    background: var(--cyan);
+    box-shadow: 0 0 8px var(--cyan);
+  }
+
+  .metric-label {
+    font-family: 'Share Tech Mono';
+    font-size: 10px; color: var(--gray);
+    letter-spacing: 2px;
+  }
+
+  .metric-value {
+    font-family: 'Orbitron';
+    font-size: 26px; font-weight: 700;
+    color: var(--cyan);
+    text-shadow: 0 0 15px var(--cyan-glow);
+    margin-top: 4px;
+  }
+  .metric-value.green { color: var(--green); text-shadow: 0 0 15px var(--green); }
+  .metric-value.gold { color: var(--gold); text-shadow: 0 0 15px rgba(255, 204, 0, 0.6); }
+  .metric-value.purple { color: var(--purple); text-shadow: 0 0 15px var(--purple); }
+  .metric-value.small { font-size: 16px; }
+
+  .res-item { margin-bottom: 14px; }
+
+  .res-header {
+    display: flex; justify-content: space-between;
+    font-family: 'Share Tech Mono';
+    font-size: 10px; color: var(--cyan-dim);
+    letter-spacing: 2px; margin-bottom: 4px;
+  }
+  .res-header .v { color: var(--white); }
+
+  .res-bar {
+    height: 3px;
+    background: rgba(0, 217, 255, 0.1);
+    position: relative; overflow: hidden;
+  }
+  .res-fill {
+    height: 100%;
+    background: var(--cyan);
+    box-shadow: 0 0 6px var(--cyan);
+    transition: width 0.6s ease;
+  }
+
+  .activity-item {
+    display: flex; gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px dotted rgba(0, 217, 255, 0.1);
+    font-family: 'Share Tech Mono';
+    font-size: 11px;
+  }
+  .activity-item .t { color: var(--cyan-dim); flex-shrink: 0; width: 45px; }
+  .activity-item .v { color: var(--white); }
+
+  ::-webkit-scrollbar { width: 2px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--cyan); }
+
+  @media (max-width: 1100px) {
+    .main { grid-template-columns: 1fr; height: auto; }
+  }
+
+  /* ─── Model Switcher ─────────────────────────────────────── */
+  .model-switcher {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px; letter-spacing: 2px;
+  }
+  .model-switcher label { color: var(--cyan-dim); }
+  .model-switcher select {
+    background: #000c1a;
+    border: 1px solid var(--border);
+    color: var(--cyan);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px; letter-spacing: 1px;
+    padding: 4px 8px; cursor: pointer;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .model-switcher select:focus { box-shadow: 0 0 10px var(--cyan-glow); }
+  .model-switcher select option { background: #000c1a; color: var(--cyan); }
+
+  /* Top-right action buttons */
+  .top-actions { display: flex; gap: 10px; align-items: center; }
+  .top-btn {
+    background: transparent;
+    border: 1px solid var(--cyan-dim);
+    color: var(--cyan);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px; font-weight: 700; letter-spacing: 2px;
+    padding: 6px 14px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .top-btn:hover {
+    background: rgba(0, 217, 255, 0.1);
+    border-color: var(--cyan);
+    box-shadow: 0 0 12px var(--cyan-glow);
+  }
+
+  /* ─── Video Studio Modal ─────────────────────────────────── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 100; display: none;
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-box {
+    width: 92%; max-width: 1000px; max-height: 88vh;
+    background: var(--panel);
+    border: 1px solid var(--cyan);
+    box-shadow: 0 0 40px var(--cyan-glow);
+    padding: 28px; overflow-y: auto;
+    position: relative;
+  }
+  .modal-box::before, .modal-box::after {
+    content: '';
+    position: absolute;
+    width: 20px; height: 20px;
+    border-color: var(--cyan); border-style: solid;
+  }
+  .modal-box::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .modal-box::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+  .modal-close {
+    position: absolute; top: 12px; right: 16px;
+    background: transparent; border: none;
+    color: var(--cyan); font-family: 'Orbitron';
+    font-size: 20px; cursor: pointer;
+  }
+  .modal-title {
+    font-family: 'Orbitron';
+    font-size: 18px; font-weight: 700; letter-spacing: 6px;
+    color: var(--cyan);
+    text-shadow: 0 0 15px var(--cyan-glow);
+    margin-bottom: 20px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .video-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .video-form .full { grid-column: 1 / -1; }
+  .video-form label {
+    font-family: 'Share Tech Mono'; font-size: 10px;
+    letter-spacing: 2px; color: var(--cyan-dim);
+    display: block; margin-bottom: 4px;
+  }
+  .video-form input, .video-form select, .video-form textarea {
+    width: 100%;
+    background: #000c1a;
+    border: 1px solid var(--border);
+    color: var(--white);
+    font-family: 'Rajdhani';
+    font-size: 14px;
+    padding: 8px 10px;
+    outline: none;
+  }
+  .video-form select {
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+  }
+  .video-form select option {
+    background: #000c1a;
+    color: var(--white);
+  }
+  .video-form textarea { min-height: 80px; resize: vertical; }
+  .video-form input:focus, .video-form select:focus, .video-form textarea:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 10px var(--cyan-glow);
+  }
+  .video-gen-btn {
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    font-family: 'Orbitron'; font-size: 13px; font-weight: 700;
+    letter-spacing: 4px; padding: 12px; cursor: pointer;
+    transition: all 0.3s;
+  }
+  .video-gen-btn:hover {
+    background: var(--cyan); color: #000;
+    box-shadow: var(--glow-strong);
+  }
+  .video-gen-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .video-job {
+    border: 1px solid var(--border);
+    background: rgba(0, 217, 255, 0.02);
+    padding: 12px; margin-bottom: 10px;
+  }
+  .video-job-head {
+    display: flex; justify-content: space-between;
+    font-family: 'Share Tech Mono'; font-size: 11px;
+    margin-bottom: 8px;
+  }
+  .video-job-prompt { color: var(--white); margin-bottom: 6px; font-size: 13px; }
+  .video-progress-track {
+    height: 4px; background: rgba(0,217,255,0.1);
+    border: 1px solid var(--border); overflow: hidden;
+  }
+  .video-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--cyan), var(--purple));
+    box-shadow: 0 0 8px var(--cyan);
+    transition: width 0.4s ease;
+  }
+  .video-status {
+    font-family: 'Share Tech Mono'; font-size: 10px;
+    letter-spacing: 2px; margin-top: 6px;
+  }
+  .video-status.done { color: var(--green); }
+  .video-status.failed { color: #ff4466; }
+  .video-status.generating { color: var(--gold); }
+  .video-actions { margin-top: 8px; display: flex; gap: 8px; }
+  .video-actions a {
+    color: var(--cyan); text-decoration: none;
+    border: 1px solid var(--cyan-dim);
+    padding: 4px 10px;
+    font-family: 'Share Tech Mono'; font-size: 10px;
+    letter-spacing: 1px;
+  }
+  .video-actions a:hover { background: var(--cyan); color: #000; }
+  .video-preview { width: 100%; max-height: 300px; margin-top: 8px; }
+
+  .provider-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .provider-tag {
+    font-family: 'Share Tech Mono'; font-size: 9px;
+    padding: 2px 6px; letter-spacing: 1px;
+    border: 1px solid var(--cyan-dim);
+    color: var(--cyan-dim);
+  }
+  .provider-tag.free { border-color: var(--green); color: var(--green); }
+</style>
+</head>
+<body>
+
+<!-- Boot sound — Solo Leveling system popup -->
+<audio id="bootSound" preload="auto" style="display:none;"></audio>
+
+<div class="vignette"></div>
+
+<div class="header">
+  <div class="brand">
+    <div class="brand-hex"></div>
+    <div>
+      <div class="brand-text">VEGA<span class="slash">//</span><span class="sys">SYSTEM</span></div>
+      <div class="brand-sub">HUNTER INTERFACE // v1.1.0</div>
+    </div>
+  </div>
+  <div class="status-bar">
+    <div class="model-switcher">
+      <label>MODEL:</label>
+      <select id="modelSelect"><option value="">loading...</option></select>
+    </div>
+    <div class="top-actions">
+      <button class="top-btn" id="openVideoStudio">VIDEO</button>
+      <button class="top-btn" id="openImageStudio">IMAGE</button>
+      <button class="top-btn" id="openBrowserStudio">BROWSE</button>
+      <button class="top-btn" id="openRagStudio">FILES</button>
+      <button class="top-btn" id="openMemorySearch">MEMORY</button>
+    </div>
+    <span class="online">SYSTEM ONLINE</span>
+    <span id="clock">--:--:--</span>
+    <span id="uptime">UPTIME 0h 0m</span>
+  </div>
+</div>
+
+<!-- ═══ VIDEO STUDIO MODAL ════════════════════════════════════════════ -->
+<div class="modal-overlay" id="videoModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('videoModal')">&times;</button>
+    <div class="modal-title">VIDEO STUDIO // TEXT-TO-VIDEO</div>
+
+    <div class="video-form">
+      <div class="full">
+        <label>PROMPT</label>
+        <textarea id="videoPrompt" placeholder="A futuristic cyberpunk city at night with neon lights..."></textarea>
+      </div>
+      <div>
+        <label>PROVIDER</label>
+        <select id="videoProvider"><option value="">loading...</option></select>
+        <div class="provider-grid" id="providerTags"></div>
+      </div>
+      <div>
+        <label>RESOLUTION</label>
+        <select id="videoResolution">
+          <option value="1920x1080" selected>Full HD (1920×1080)</option>
+          <option value="1280x720">HD (1280×720)</option>
+          <option value="854x480">SD (854×480)</option>
+        </select>
+      </div>
+      <div>
+        <label>DURATION (seconds)</label>
+        <input type="number" id="videoDuration" value="5" min="2" max="20">
+      </div>
+      <div class="full">
+        <label>QUALITY STEPS <span id="stepsVal" style="color:var(--cyan)">20</span> &nbsp;<span style="color:var(--gray);font-size:10px">(8=fast·low | 20=best·slow)</span></label>
+        <input type="range" id="videoSteps" min="4" max="50" value="20" step="1"
+          style="width:100%;accent-color:var(--cyan);cursor:pointer"
+          oninput="document.getElementById('stepsVal').textContent=this.value">
+      </div>
+      <div class="full">
+        <button class="video-gen-btn" id="videoGenBtn">GENERATE VIDEO</button>
+      </div>
+    </div>
+
+    <div class="modal-title" style="font-size:14px; margin-top:12px;">GENERATED VIDEOS</div>
+    <div id="videoJobsList"><div style="color:var(--gray); font-family:'Share Tech Mono'; font-size:11px;">No videos yet.</div></div>
+  </div>
+</div>
+
+<!-- ═══ MEMORY SEARCH MODAL ═══════════════════════════════════════════ -->
+<div class="modal-overlay" id="memoryModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('memoryModal')">&times;</button>
+    <div class="modal-title">MEMORY // CHAT ARCHIVE</div>
+    <div class="video-form">
+      <div class="full">
+        <label>SEARCH PAST CONVERSATIONS</label>
+        <input type="text" id="memorySearchInput" placeholder="Search anything you've ever discussed with VEGA...">
+      </div>
+      <div class="full">
+        <button class="video-gen-btn" id="memorySearchBtn">SEARCH MEMORY</button>
+      </div>
+    </div>
+    <div id="memoryResults"></div>
+  </div>
+</div>
+
+<!-- ═══ IMAGE STUDIO MODAL ═══════════════════════════════════════════ -->
+<div class="modal-overlay" id="imageModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('imageModal')">&times;</button>
+    <div class="modal-title">IMAGE STUDIO // TEXT-TO-IMAGE</div>
+    <div class="video-form">
+      <div class="full">
+        <label>PROMPT</label>
+        <textarea id="imagePrompt" rows="3" placeholder="A cyberpunk hunter at dawn, cinematic..."></textarea>
+      </div>
+      <div>
+        <label>PROVIDER (100% FREE)</label>
+        <select id="imageProvider"></select>
+      </div>
+      <div class="full">
+        <button class="video-gen-btn" id="imageGenBtn">GENERATE IMAGE</button>
+      </div>
+    </div>
+    <div id="imageOutput" style="margin-top:20px;"></div>
+  </div>
+</div>
+
+<!-- ═══ BROWSER AGENT MODAL ══════════════════════════════════════════ -->
+<div class="modal-overlay" id="browserModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('browserModal')">&times;</button>
+    <div class="modal-title">BROWSER AGENT // AUTONOMOUS WEB</div>
+    <div class="video-form">
+      <div class="full">
+        <label>TASK (VEGA will autonomously browse the web)</label>
+        <textarea id="browserTask" rows="3" placeholder="Search 'best ramen in Tokyo 2026' and extract the top 5 results"></textarea>
+      </div>
+      <div class="full">
+        <button class="video-gen-btn" id="browserRunBtn">RUN BROWSER TASK</button>
+      </div>
+    </div>
+    <div id="browserOutput" style="margin-top:20px;"></div>
+  </div>
+</div>
+
+<!-- ═══ FILES / RAG MODAL ═════════════════════════════════════════════ -->
+<div class="modal-overlay" id="ragModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('ragModal')">&times;</button>
+    <div class="modal-title">FILES // LOCAL RAG</div>
+    <div class="video-form">
+      <div class="full">
+        <label>INDEX FOLDER OR FILE PATH</label>
+        <input type="text" id="ragPath" placeholder="./documents  or  C:\Users\YourName\Notes">
+      </div>
+      <div>
+        <button class="video-gen-btn" id="ragIndexBtn">INDEX</button>
+      </div>
+      <div>
+        <span id="ragStatus" style="opacity:.7;">chunks: 0</span>
+      </div>
+      <div class="full">
+        <label>ASK YOUR FILES</label>
+        <input type="text" id="ragQuery" placeholder="What did I write about Vega architecture?">
+      </div>
+      <div class="full">
+        <button class="video-gen-btn" id="ragSearchBtn">SEARCH</button>
+      </div>
+    </div>
+    <div id="ragResults" style="margin-top:20px;"></div>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="panel">
+    <div class="hunter-card">
+      <div class="hunter-rank">RANK: S // ARCHITECT</div>
+      <div class="hunter-portrait"><span class="initial">M</span></div>
+      <div class="hunter-name">MASOOD</div>
+      <div class="hunter-title">"The Creator"</div>
+      <div class="level-display">LEVEL <span class="num" id="lvl">7</span></div>
+      <div class="xp-bar"><div class="xp-fill" id="xpFill" style="width:48%"></div></div>
+      <div class="xp-text" id="xpText">0 / 100 XP</div>
+    </div>
+
+    <div class="panel-title">STATUS</div>
+    <div class="stats-block">
+      <div class="stat-row"><span class="label">STR</span><span class="val" id="statStr">84</span></div>
+      <div class="stat-row"><span class="label">INT</span><span class="val" id="statInt">97</span></div>
+      <div class="stat-row"><span class="label">AGI</span><span class="val" id="statAgi">71</span></div>
+      <div class="stat-row"><span class="label">VIT</span><span class="val" id="statVit">82</span></div>
+      <div class="stat-row"><span class="label">PER</span><span class="val" id="statPer">88</span></div>
+    </div>
+
+    <div class="panel-title">SHADOW ARMY</div>
+    <ul class="army-list" id="armyList">
+      <li class="soldier active"><span class="soldier-icon"></span><span class="soldier-name">Planner</span><span class="soldier-power">98%</span></li>
+      <li class="soldier"><span class="soldier-icon"></span><span class="soldier-name">Research</span><span class="soldier-power">94%</span></li>
+      <li class="soldier"><span class="soldier-icon"></span><span class="soldier-name">Code</span><span class="soldier-power">91%</span></li>
+      <li class="soldier"><span class="soldier-icon"></span><span class="soldier-name">Automation</span><span class="soldier-power">89%</span></li>
+      <li class="soldier"><span class="soldier-icon"></span><span class="soldier-name">Resume</span><span class="soldier-power">95%</span></li>
+      <li class="soldier"><span class="soldier-icon"></span><span class="soldier-name">Job Search</span><span class="soldier-power">87%</span></li>
+      <li class="soldier"><span class="soldier-icon"></span><span class="soldier-name">Study</span><span class="soldier-power">92%</span></li>
+      <li class="soldier"><span class="soldier-icon"></span><span class="soldier-name">Memory</span><span class="soldier-power">96%</span></li>
+      <li class="soldier"><span class="soldier-icon"></span><span class="soldier-name">Email</span><span class="soldier-power">90%</span></li>
+      <li class="soldier"><span class="soldier-icon"></span><span class="soldier-name">Finance</span><span class="soldier-power">88%</span></li>
+      <li class="soldier"><span class="soldier-icon"></span><span class="soldier-name">Health</span><span class="soldier-power">93%</span></li>
+      <li class="soldier"><span class="soldier-icon"></span><span class="soldier-name">System Monitor</span><span class="soldier-power">97%</span></li>
+    </ul>
+  </div>
+
+  <div class="panel cmd-panel">
+    <div class="panel-title">COMMAND INTERFACE</div>
+    <div class="cmd-log" id="cmdLog">
+      <div class="system-popup">
+        <div class="system-popup-title">NOTIFICATION</div>
+        <div style="text-align:center; line-height: 1.8;">
+          System initialized successfully.<br>
+          All <span style="color:var(--cyan); font-weight:600;">12 Shadow Soldiers</span> have been summoned.<br>
+          Ready to receive your commands, <span style="color:var(--gold);">Hunter Masood</span>.
+        </div>
+      </div>
+    </div>
+    <div class="cmd-input-zone">
+      <input type="text" class="cmd-input" id="cmdInput" placeholder="ENTER COMMAND..." autocomplete="off">
+      <button class="cmd-btn" id="sendBtn">EXECUTE</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">METRICS</div>
+
+    <div class="metric-box">
+      <div class="metric-label">QUESTS COMPLETED</div>
+      <div class="metric-value" id="taskCount">0</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-label">SUCCESS RATE</div>
+      <div class="metric-value green" id="successRate">---%</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-label">ACTIVE MODEL</div>
+      <div class="metric-value purple small" id="activeModel">...</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-label">MEMORY FRAGMENTS</div>
+      <div class="metric-value gold" id="memoryCount">0</div>
+    </div>
+
+    <div class="panel-title" style="margin-top:24px;">RESOURCES</div>
+    <div class="res-item">
+      <div class="res-header"><span>CPU</span><span class="v" id="cpuVal">--%</span></div>
+      <div class="res-bar"><div class="res-fill" id="cpuBar" style="width:0%"></div></div>
+    </div>
+    <div class="res-item">
+      <div class="res-header"><span>MEM</span><span class="v" id="ramVal">--%</span></div>
+      <div class="res-bar"><div class="res-fill" id="ramBar" style="width:0%"></div></div>
+    </div>
+    <div class="res-item">
+      <div class="res-header"><span>DISK</span><span class="v" id="diskVal">--%</span></div>
+      <div class="res-bar"><div class="res-fill" id="diskBar" style="width:0%"></div></div>
+    </div>
+
+    <div class="panel-title" style="margin-top:24px;">ACTIVITY LOG</div>
+    <div id="activityFeed">
+      <div class="activity-item">
+        <span class="t">NOW</span>
+        <span class="v">System boot sequence complete</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let ws = null;
+  let taskCount = 0;
+  let successCount = 0;
+  const startTime = Date.now();
+
+  function updateOnlineStatus(online) {
+    const el = document.querySelector('.online');
+    if (!el) return;
+    el.textContent = online ? 'SYSTEM ONLINE' : 'SYSTEM OFFLINE';
+    el.style.color = online ? 'var(--green)' : '#ff6b6b';
+  }
+
+  function connectWS() {
+    // Use wss:// on HTTPS pages to avoid mixed-content block; use location.host (includes port)
+    const wsProto = location.protocol === 'https:' ? 'wss' : 'ws';
+    const wsUrl = `${wsProto}://${location.host}/ws`;
+    ws = new WebSocket(wsUrl);
+    ws.onopen = () => { addActivity('Connection established'); updateOnlineStatus(true); };
+    ws.onclose = () => { addActivity('Connection lost, reconnecting'); updateOnlineStatus(false); setTimeout(connectWS, 3000); };
+    ws.onerror = (e) => { console.error('WebSocket error:', e); };
+    ws.onmessage = (event) => {
+      try {
+        const msg = JSON.parse(event.data);
+        if (msg.type === 'stream') {
+          // Real-time token streaming — build response word-by-word
+          if (!vegaThinkingEl || !vegaThinkingEl.classList.contains('msg-streaming')) {
+            if (vegaThinkingEl && vegaThinkingEl.parentNode) vegaThinkingEl.parentNode.removeChild(vegaThinkingEl);
+            const div = document.createElement('div');
+            div.className = 'msg msg-streaming';
+            div.innerHTML = '<div class="msg-sender vega">VEGA</div><div class="msg-content"></div>';
+            cmdLog.appendChild(div);
+            vegaThinkingEl = div;
+          }
+          const content = vegaThinkingEl.querySelector('.msg-content');
+          if (content) {
+            content.textContent += (msg.data && msg.data.token) || '';
+            cmdLog.scrollTop = cmdLog.scrollHeight;
+          }
+        } else if (msg.type === 'response') {
+          if (vegaThinkingEl && vegaThinkingEl.classList.contains('msg-streaming')) {
+            // Streaming finished — finalize the element in place (no flicker)
+            vegaThinkingEl.classList.remove('msg-streaming');
+            if (msg.data && msg.data.success === false) {
+              // Error after streaming — overwrite content in red
+              const c = vegaThinkingEl.querySelector('.msg-content');
+              if (c) c.textContent = msg.data.output || 'Error occurred';
+              const s = vegaThinkingEl.querySelector('.msg-sender');
+              if (s) s.style.color = '#ff6b6b';
+            }
+            vegaThinkingEl = null;
+          } else {
+            // No streaming (fallback path or error before any tokens)
+            clearThinking();
+            addMessage('VEGA', msg.data.output || String(msg.data), 'vega');
+          }
+          setInputBusy(false);
+          taskCount++;
+          if (msg.data && msg.data.success !== false) successCount++;
+          updateStats();
+        } else if (msg.type === 'activity') {
+          addActivity(msg.data.task || 'Task executed');
+        } else if (msg.type === 'model_switched') {
+          const m = (msg.data && msg.data.model) || '';
+          if (m) document.getElementById('activeModel').textContent = m.toUpperCase().replace(':', ' ');
+        }
+        handleVideoEvent(msg);
+      } catch (e) { console.error('WS message parse error:', e); }
+    };
+  }
+
+  const cmdLog = document.getElementById('cmdLog');
+  const cmdInput = document.getElementById('cmdInput');
+  const sendBtn = document.getElementById('sendBtn');
+
+  function addMessage(sender, content, type) {
+    const div = document.createElement('div');
+    div.className = 'msg';
+    div.innerHTML = '<div class="msg-sender ' + (type || 'system') + '">' + escapeHtml(sender) + '</div><div class="msg-content">' + escapeHtml(content) + '</div>';
+    cmdLog.appendChild(div);
+    cmdLog.scrollTop = cmdLog.scrollHeight;
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = String(text);
+    return div.innerHTML;
+  }
+
+  let vegaThinkingEl = null;
+
+  function setInputBusy(busy) {
+    sendBtn.disabled = busy;
+    cmdInput.disabled = busy;
+    sendBtn.textContent = busy ? 'PROCESSING...' : 'EXECUTE';
+  }
+
+  function showThinking() {
+    const div = document.createElement('div');
+    div.className = 'msg';
+    div.innerHTML = '<div class="msg-sender vega">VEGA</div><div class="msg-content" style="opacity:.5;font-style:italic;">⟳ Processing…</div>';
+    cmdLog.appendChild(div);
+    cmdLog.scrollTop = cmdLog.scrollHeight;
+    vegaThinkingEl = div;
+  }
+
+  function clearThinking() {
+    if (vegaThinkingEl && vegaThinkingEl.parentNode) {
+      vegaThinkingEl.parentNode.removeChild(vegaThinkingEl);
+    }
+    vegaThinkingEl = null;
+  }
+
+  function sendCommand() {
+    const text = cmdInput.value.trim();
+    if (!text || sendBtn.disabled) return;
+    addMessage('HUNTER', text, 'user');
+    cmdInput.value = '';
+    addActivity('Cmd: ' + text.substring(0, 35));
+    setInputBusy(true);
+    showThinking();
+
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ type: 'command', task: text }));
+      // Response handled in ws.onmessage — controls re-enabled there
+    } else {
+      fetch('/api/task', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ task: text })
+      })
+      .then(r => r.json())
+      .then(data => {
+        clearThinking();
+        addMessage('VEGA', data.output || JSON.stringify(data), 'vega');
+        taskCount++;
+        if (data.success !== false) successCount++;
+        updateStats();
+      })
+      .catch(err => {
+        clearThinking();
+        addMessage('SYSTEM', 'Error: ' + err.message, 'system');
+      })
+      .finally(() => setInputBusy(false));
+    }
+  }
+
+  sendBtn.addEventListener('click', sendCommand);
+  cmdInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendCommand(); });
+
+  function addActivity(text) {
+    const feed = document.getElementById('activityFeed');
+    const now = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+    const item = document.createElement('div');
+    item.className = 'activity-item';
+    item.innerHTML = '<span class="t">' + now + '</span><span class="v">' + escapeHtml(text) + '</span>';
+    feed.prepend(item);
+    while (feed.children.length > 20) feed.removeChild(feed.lastChild);
+  }
+
+  function updateStats() {
+    document.getElementById('taskCount').textContent = taskCount;
+    const rate = taskCount > 0 ? Math.round((successCount / taskCount) * 100) : 0;
+    document.getElementById('successRate').textContent = rate + '%';
+  }
+
+  function updateSystemStatus(data) {
+    if (data.cpu !== undefined) {
+      document.getElementById('cpuVal').textContent = data.cpu + '%';
+      document.getElementById('cpuBar').style.width = data.cpu + '%';
+    }
+    if (data.ram !== undefined) {
+      document.getElementById('ramVal').textContent = data.ram + '%';
+      document.getElementById('ramBar').style.width = data.ram + '%';
+    }
+    if (data.disk !== undefined) {
+      document.getElementById('diskVal').textContent = data.disk + '%';
+      document.getElementById('diskBar').style.width = data.disk + '%';
+    }
+    if (data.memory_count !== undefined) {
+      document.getElementById('memoryCount').textContent = data.memory_count;
+    }
+  }
+
+  setInterval(() => {
+    document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-US', { hour12: false });
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const h = Math.floor(elapsed / 3600);
+    const m = Math.floor((elapsed % 3600) / 60);
+    document.getElementById('uptime').textContent = 'UPTIME ' + h + 'h ' + m + 'm';
+  }, 1000);
+
+  async function pollStatus() {
+    try {
+      const resp = await fetch('/api/status');
+      const data = await resp.json();
+      updateSystemStatus(data);
+      if (data.level !== undefined) {
+        document.getElementById('lvl').textContent = data.level;
+        const levelXp = (data.xp || 0) % 100;
+        document.getElementById('xpFill').style.width = levelXp + '%';
+        document.getElementById('xpText').textContent = levelXp + ' / 100 XP';
+      }
+      if (data.agents && data.agents.length > 0) {
+        const list = document.getElementById('armyList');
+        list.innerHTML = '';
+        data.agents.slice(0, 12).forEach(a => {
+          const li = document.createElement('li');
+          li.className = 'soldier' + (a.is_active ? ' active' : '');
+          li.style.cursor = 'pointer';
+          const rate = Math.round(a.success_rate * 100);
+          const name = a.name.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+          li.innerHTML = '<span class="soldier-icon"></span><span class="soldier-name">' + escapeHtml(name) + '</span><span class="soldier-power">' + rate + '%</span>';
+          li.addEventListener('click', () => {
+            cmdInput.value = 'Tell me about the ' + name + ' agent status and capabilities';
+            cmdInput.focus();
+          });
+          list.appendChild(li);
+        });
+      }
+    } catch (e) { console.error('pollStatus error:', e); }
+  }
+
+  // ═══ BOOT SOUND ═════════════════════════════════════════════════
+  function playBootSound() {
+    const audio = document.getElementById('bootSound');
+    if (!audio) return;
+    audio.src = '/static/sounds/boot/' + encodeURIComponent('System - Pop Up Sound Effect \uFF5C Solo leveling [K6hPM5xedkw].webm');
+    audio.volume = 0.7;
+    audio.play().catch(() => {
+      // Browser blocks autoplay — unlock on first user interaction
+      const unlock = () => {
+        audio.play().catch(() => {});
+        document.removeEventListener('click', unlock);
+        document.removeEventListener('keydown', unlock);
+      };
+      document.addEventListener('click', unlock, { once: true });
+      document.addEventListener('keydown', unlock, { once: true });
+    });
+  }
+
+  // ═══ MODEL SWITCHER ═════════════════════════════════════════════
+  async function loadModels() {
+    try {
+      const resp = await fetch('/api/models');
+      const data = await resp.json();
+      const sel = document.getElementById('modelSelect');
+      sel.innerHTML = '';
+      (data.models || []).forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.name;
+        opt.textContent = m.label || m.name;
+        if (m.name === data.current) opt.selected = true;
+        sel.appendChild(opt);
+      });
+      document.getElementById('activeModel').textContent =
+        (data.current || '').toUpperCase().replace(':', ' ');
+    } catch (e) {
+      console.error('loadModels', e);
+      const sel = document.getElementById('modelSelect');
+      sel.innerHTML = '<option value="">unavailable</option>';
+      sel.disabled = true;
+    }
+  }
+
+  document.getElementById('modelSelect').addEventListener('change', async (e) => {
+    const model = e.target.value;
+    try {
+      await fetch('/api/models/switch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model })
+      });
+      document.getElementById('activeModel').textContent = model.toUpperCase().replace(':', ' ');
+      addActivity('Switched model to ' + model);
+    } catch (err) { addActivity('Model switch failed'); }
+  });
+
+  // ═══ MODAL HELPERS ═══════════════════════════════════════════════
+  function openModal(id) { document.getElementById(id).classList.add('active'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+  document.getElementById('openVideoStudio').addEventListener('click', () => {
+    openModal('videoModal'); loadProviders(); loadVideoJobs();
+  });
+  document.getElementById('openMemorySearch').addEventListener('click', () => openModal('memoryModal'));
+  document.getElementById('openImageStudio').addEventListener('click', () => {
+    openModal('imageModal'); loadImageProviders();
+  });
+  document.getElementById('openBrowserStudio').addEventListener('click', () => openModal('browserModal'));
+  document.getElementById('openRagStudio').addEventListener('click', () => { openModal('ragModal'); refreshRagStatus(); });
+
+  // ═══ IMAGE STUDIO ═══════════════════════════════════════════════
+  async function loadImageProviders() {
+    try {
+      const resp = await fetch('/api/image/providers');
+      const data = await resp.json();
+      const sel = document.getElementById('imageProvider');
+      sel.innerHTML = '';
+      (data.providers || []).forEach(p => {
+        const o = document.createElement('option');
+        o.value = p.name; o.textContent = p.label + ' ' + (p.type === 'local' ? '[LOCAL]' : '[CLOUD]');
+        if (p.name === data.default) o.selected = true;
+        sel.appendChild(o);
+      });
+    } catch(e) { console.error(e); }
+  }
+  document.getElementById('imageGenBtn').addEventListener('click', async () => {
+    const prompt = document.getElementById('imagePrompt').value.trim();
+    if (!prompt) return;
+    // Use null when no provider selected so the agent uses its default
+    const providerRaw = document.getElementById('imageProvider').value;
+    const provider = providerRaw || null;
+    const out = document.getElementById('imageOutput');
+    out.innerHTML = '<div style="opacity:.6;">Generating... (this may take 1-2 min on first run while model loads)</div>';
+    document.getElementById('imageGenBtn').disabled = true;
+    try {
+      const body = provider ? {prompt, provider} : {prompt};
+      const resp = await fetch('/api/image/generate', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(body)
+      });
+      const data = await resp.json();
+      if (data.success && data.data && data.data.path) {
+        // Extract filename and serve via /api/image/view/:filename
+        const parts = (data.data.path || '').replace(/\\/g, '/').split('/');
+        const filename = parts[parts.length - 1];
+        const usedProvider = (data.data.provider || provider || 'local').toUpperCase();
+        out.innerHTML =
+          `<div style="color:#00ffaa;margin-bottom:8px;">[OK] ${escapeHtml(data.output)}</div>` +
+          `<div style="font-size:11px;opacity:.6;margin-bottom:8px;">Provider: ${escapeHtml(usedProvider)}</div>` +
+          `<img src="/api/image/view/${encodeURIComponent(filename)}" alt="${escapeHtml(prompt)}"
+            style="max-width:100%;border:1px solid var(--cyan);border-radius:4px;display:block;">`;
+      } else {
+        out.innerHTML = `<div style="color:#ff6b6b;">[ERR] ${escapeHtml(data.output || data.error || 'Unknown error')}</div>`;
+      }
+    } catch(e) { out.innerHTML = `<div style="color:#ff6b6b;">[ERR] ${escapeHtml(e.message)}</div>`; }
+    document.getElementById('imageGenBtn').disabled = false;
+  });
+
+  // ═══ BROWSER AGENT ══════════════════════════════════════════════
+  document.getElementById('browserRunBtn').addEventListener('click', async () => {
+    const task = document.getElementById('browserTask').value.trim();
+    if (!task) return;
+    const out = document.getElementById('browserOutput');
+    out.innerHTML = '<div style="opacity:.6;">VEGA is driving the browser...</div>';
+    try {
+      const resp = await fetch('/api/browser/run', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({task, context: {}})
+      });
+      const data = await resp.json();
+      if (!data.success) {
+        const errMsg = data.error || data.output || 'Browser task failed';
+        const needsPlaywright = errMsg.toLowerCase().includes('playwright');
+        out.innerHTML = `<div style="color:#ff6b6b;">[ERR] ${escapeHtml(errMsg)}</div>` +
+          (needsPlaywright
+            ? '<div style="margin-top:8px;opacity:.6;font-size:11px;">Run: <code>pip install playwright &amp;&amp; playwright install chromium</code></div>'
+            : '');
+        return;
+      }
+      out.innerHTML = `<pre style="white-space:pre-wrap;color:#00ffaa;">${escapeHtml(data.output)}</pre>`;
+      if (data.data && data.data.results) {
+        out.innerHTML += `<details style="margin-top:10px;"><summary>Steps</summary><pre>${escapeHtml(JSON.stringify(data.data.results, null, 2))}</pre></details>`;
+      }
+    } catch(e) { out.innerHTML = `<div style="color:#ff6b6b;">[ERR] ${escapeHtml(e.message)}</div>`; }
+  });
+
+  // ═══ RAG / FILES ════════════════════════════════════════════════
+  async function refreshRagStatus() {
+    try {
+      const resp = await fetch('/api/rag/status');
+      const d = await resp.json();
+      document.getElementById('ragStatus').textContent = d.enabled ? `chunks: ${d.total_chunks}` : 'RAG disabled';
+    } catch(e){}
+  }
+  document.getElementById('ragIndexBtn').addEventListener('click', async () => {
+    const path = document.getElementById('ragPath').value.trim();
+    if (!path) return;
+    const status = document.getElementById('ragStatus');
+    status.textContent = 'indexing...';
+    try {
+      const resp = await fetch('/api/rag/index', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({path})
+      });
+      const d = await resp.json();
+      status.textContent = `indexed +${d.indexed} | total ${d.total_chunks}`;
+    } catch(e){ status.textContent = 'error: ' + e.message; }
+  });
+  document.getElementById('ragSearchBtn').addEventListener('click', async () => {
+    const query = document.getElementById('ragQuery').value.trim();
+    if (!query) return;
+    const out = document.getElementById('ragResults');
+    out.innerHTML = '<div style="opacity:.6;">searching...</div>';
+    try {
+      const resp = await fetch('/api/rag/search', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({query, k: 5})
+      });
+      const d = await resp.json();
+      out.innerHTML = (d.results || []).map(r =>
+        `<div style="border-left:2px solid #00ffaa;padding:8px 12px;margin:8px 0;background:rgba(0,255,170,0.05);">
+          <div style="font-size:11px;opacity:.6;">${r.path} (score ${r.score})</div>
+          <div style="margin-top:4px;">${r.text.replace(/</g,'&lt;').substring(0,400)}...</div>
+        </div>`).join('') || '<div style="opacity:.6;">No results. Index some files first.</div>';
+    } catch(e){ out.innerHTML = `<div style="color:#ff6b6b;">[ERR] ${e.message}</div>`; }
+  });
+
+  // ═══ VIDEO STUDIO ═══════════════════════════════════════════════
+  // Providers that need an env key to work (cloud); local ones just need torch/diffusers
+  const PROVIDER_KEYS = { huggingface: 'HF_API_KEY', zsky: 'ZSKY_API_KEY', json2video: 'JSON2VIDEO_API_KEY', luma: 'LUMA_API_KEY' };
+  const LOCAL_PROVIDERS = new Set(['wan2', 'cogvideox', 'ltx', 'animatediff']);
+
+  async function loadProviders() {
+    try {
+      const resp = await fetch('/api/video/providers');
+      const data = await resp.json();
+      const sel = document.getElementById('videoProvider');
+      const tags = document.getElementById('providerTags');
+      sel.innerHTML = ''; tags.innerHTML = '';
+      // Pick a good default: prefer local providers (no key needed)
+      let bestDefault = data.default;
+      (data.providers || []).forEach(p => {
+        const isLocal = LOCAL_PROVIDERS.has(p.name);
+        const needsKey = !isLocal && PROVIDER_KEYS[p.name];
+        const statusLabel = isLocal ? '⬡ LOCAL' : (needsKey ? '⚠ NEEDS KEY' : '✓ CLOUD');
+        const opt = document.createElement('option');
+        opt.value = p.name;
+        opt.textContent = p.label + ' [' + statusLabel + ']';
+        if (p.name === data.default) opt.selected = true;
+        sel.appendChild(opt);
+        const tag = document.createElement('span');
+        tag.className = 'provider-tag' + (p.free ? ' free' : '');
+        tag.style.opacity = (needsKey) ? '0.5' : '1';
+        tag.title = isLocal
+          ? 'Local GPU — model auto-downloads on first use (~2-6 GB)'
+          : (needsKey ? 'Add ' + PROVIDER_KEYS[p.name] + ' to .env to enable' : 'Cloud — free tier');
+        tag.textContent = p.name.toUpperCase() + (p.free ? ' FREE' : ' PAID') + (needsKey ? ' 🔑' : '');
+        tags.appendChild(tag);
+      });
+    } catch (e) { console.error('loadProviders', e); }
+  }
+
+  async function loadVideoJobs() {
+    try {
+      const resp = await fetch('/api/video/list?limit=30');
+      const data = await resp.json();
+      const list = document.getElementById('videoJobsList');
+      if (!data.videos || data.videos.length === 0) {
+        list.innerHTML = '<div style="color:var(--gray); font-family:\'Share Tech Mono\'; font-size:11px;">No videos yet.</div>';
+        return;
+      }
+      // Remove "no videos" placeholder if present
+      if (list.querySelector('div[style]') && !list.querySelector('.video-job')) {
+        list.innerHTML = '';
+      }
+      data.videos.forEach(v => {
+        const existing = document.getElementById('job-' + v.job_id);
+        if (existing) {
+          // Incremental update — only touch progress bar and status text, preserving <video> element
+          const fill = existing.querySelector('.video-progress-fill');
+          if (fill) fill.style.width = (v.progress || 0) + '%';
+          const statusEl = existing.querySelector('.video-status');
+          if (statusEl) {
+            const statusClass = v.status === 'done' ? 'done' : v.status === 'failed' ? 'failed' : 'generating';
+            statusEl.className = 'video-status ' + statusClass;
+            statusEl.textContent = v.status.toUpperCase() + ' // ' + (v.progress || 0) + '%' +
+                                   (v.error ? ' // ' + v.error : '');
+          }
+          // Append video/download elements only once when done
+          if (v.status === 'done' && !existing.querySelector('video')) {
+            const vid = document.createElement('video');
+            vid.className = 'video-preview';
+            vid.controls = true;
+            vid.src = '/api/video/download/' + v.job_id;
+            existing.appendChild(vid);
+            const actions = document.createElement('div');
+            actions.className = 'video-actions';
+            actions.innerHTML = '<a href="/api/video/download/' + v.job_id + '" download>DOWNLOAD</a>';
+            existing.appendChild(actions);
+          }
+        } else {
+          // New card — prepend so newest appears first
+          list.insertBefore(renderVideoJob(v), list.firstChild);
+        }
+      });
+    } catch (e) { console.error('loadVideoJobs', e); }
+  }
+
+  function renderVideoJob(j) {
+    const div = document.createElement('div');
+    div.className = 'video-job';
+    div.id = 'job-' + j.job_id;
+    const statusClass = j.status === 'done' ? 'done'
+                      : j.status === 'failed' ? 'failed' : 'generating';
+    let preview = '';
+    if (j.status === 'done') {
+      preview = '<video class="video-preview" controls src="/api/video/download/' + j.job_id + '"></video>';
+    }
+    let actions = '';
+    if (j.status === 'done') {
+      actions = '<div class="video-actions"><a href="/api/video/download/' + j.job_id + '" download>DOWNLOAD</a></div>';
+    }
+    div.innerHTML =
+      '<div class="video-job-head">' +
+        '<span>' + j.provider.toUpperCase() + ' // ' + j.resolution + '</span>' +
+        '<span>' + new Date(j.started_at * 1000).toLocaleTimeString() + '</span>' +
+      '</div>' +
+      '<div class="video-job-prompt">' + escapeHtml(j.prompt) + '</div>' +
+      '<div class="video-progress-track"><div class="video-progress-fill" style="width:' + (j.progress || 0) + '%"></div></div>' +
+      '<div class="video-status ' + statusClass + '">' + j.status.toUpperCase() + ' // ' + (j.progress || 0) + '%' +
+      (j.error ? ' // ' + escapeHtml(j.error) : '') + '</div>' +
+      actions + preview;
+    return div;
+  }
+
+  document.getElementById('videoGenBtn').addEventListener('click', async () => {
+    const prompt = document.getElementById('videoPrompt').value.trim();
+    if (!prompt) return;
+    const provider = document.getElementById('videoProvider').value;
+    const resolution = document.getElementById('videoResolution').value;
+    const duration = parseInt(document.getElementById('videoDuration').value, 10);
+    const steps = parseInt(document.getElementById('videoSteps').value, 10);
+    const btn = document.getElementById('videoGenBtn');
+    btn.disabled = true; btn.textContent = 'QUEUEING...';
+    try {
+      const resp = await fetch('/api/video/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt, provider, resolution, duration, steps })
+      });
+      const data = await resp.json();
+      addActivity('Video job ' + data.job_id + ' queued');
+      document.getElementById('videoPrompt').value = '';
+      await loadVideoJobs();
+    } catch (e) { addActivity('Video gen failed: ' + e.message); }
+    btn.disabled = false; btn.textContent = 'GENERATE VIDEO';
+  });
+
+  // Poll video jobs while modal is open
+  setInterval(() => {
+    if (document.getElementById('videoModal').classList.contains('active')) {
+      loadVideoJobs();
+    }
+  }, 3000);
+
+  // ═══ MEMORY SEARCH ══════════════════════════════════════════════
+  document.getElementById('memorySearchBtn').addEventListener('click', async () => {
+    const q = document.getElementById('memorySearchInput').value.trim();
+    if (!q) return;
+    try {
+      const resp = await fetch('/api/memory/chats/search?query=' + encodeURIComponent(q) + '&n=15');
+      const data = await resp.json();
+      const out = document.getElementById('memoryResults');
+      out.innerHTML = '';
+      const results = data.results || [];
+      if (results.length === 0) {
+        out.innerHTML = '<div style="color:var(--gray);">No matches found.</div>';
+        return;
+      }
+      results.forEach(r => {
+        const div = document.createElement('div');
+        div.className = 'video-job';
+        const content = r.content || '';
+        const when = r.metadata && r.metadata.timestamp
+                   ? new Date(r.metadata.timestamp * 1000).toLocaleString()
+                   : '';
+        div.innerHTML = '<div class="video-job-head"><span>' + (r.metadata && r.metadata.role || 'chat').toUpperCase() +
+                        '</span><span>' + when + '</span></div>' +
+                        '<div class="video-job-prompt">' + escapeHtml(content) + '</div>';
+        out.appendChild(div);
+      });
+    } catch (e) { console.error('memory search', e); }
+  });
+  document.getElementById('memorySearchInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.getElementById('memorySearchBtn').click();
+  });
+
+  // ═══ WS video progress updates ══════════════════════════════════
+  // Debounce: don't hammer /api/video/list on every denoising step
+  let _lastJobsRefresh = 0;
+  function handleVideoEvent(msg) {
+    if (msg.type === 'video.progress' || msg.type === 'video.completed' || msg.type === 'video.failed') {
+      const now = Date.now();
+      // Progress events fire every denoising step — throttle to max once per 2s
+      const minInterval = msg.type === 'video.progress' ? 2000 : 0;
+      if (now - _lastJobsRefresh >= minInterval) {
+        if (document.getElementById('videoModal').classList.contains('active')) {
+          _lastJobsRefresh = now;
+          loadVideoJobs();
+        }
+      }
+      if (msg.type === 'video.completed') addActivity('Video done: ' + (msg.data && msg.data.job_id || ''));
+      if (msg.type === 'video.failed') addActivity('Video failed: ' + (msg.data && msg.data.job_id || ''));
+    }
+  }
+
+  // ═══ BOOT SEQUENCE ══════════════════════════════════════════════
+  connectWS();
+  setInterval(pollStatus, 5000);
+  pollStatus();
+  loadModels();
+  playBootSound();
+  cmdInput.focus();
+</script>
+</body>
+</html>

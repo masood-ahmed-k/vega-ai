@@ -1,0 +1,243 @@
+# VEGA AI Configuration
+# =====================
+# NO PAID SERVICES — only free, local, and free-tier providers.
+system:
+  name: "VEGA"
+  version: "1.2.0"
+  user: "Masood"
+  log_level: "INFO"
+  data_dir: "./data"
+
+models:
+  default_cloud: "qwen3:8b"
+  default_local: "qwen3:8b"
+  enable_ollama: true
+  ollama_host: "http://localhost:11434"
+
+  # Hardware optimization — RTX 4060 8GB + 32GB RAM + i7-13650HX
+  hardware:
+    num_gpu: 99
+    num_ctx: 8192
+    num_thread: 14
+    num_batch: 512
+    keep_alive: "30m"
+    preload_on_start: true
+
+  routing:
+    reasoning: "qwen3:8b"
+    coding: "qwen3:8b"
+    research: "qwen3:8b"
+    fast: "qwen3:8b"
+    creative: "qwen3:8b"
+    analysis: "qwen3:8b"
+    conversation: "qwen3:8b"
+    summarization: "qwen3:8b"
+
+  fallback_chain:
+    - "qwen3:8b"
+    - "llama3:latest"
+  cost_preference: "local_first"
+
+  available:
+    - {name: "qwen3:32b",      label: "Qwen3 32B (Max Quality)",      type: local, strength: strongest}
+    - {name: "qwen3:30b-a3b",  label: "Qwen3 30B-A3B (Balanced MoE)", type: local, strength: balanced}
+    - {name: "qwen3:8b",       label: "Qwen3 8B (Fast)",              type: local, strength: fast}
+    - {name: "llama3:latest",  label: "Llama 3 (Fallback)",           type: local, strength: legacy}
+
+voice:
+  enabled: false
+  wake_word: "hey vega"
+  stt_engine: "whisper"
+  whisper_model: "base"
+  tts_engine: "pyttsx3"
+  tts_voice: "nova"
+  continuous_mode: false
+  vad_enabled: true
+  silence_timeout: 2.0
+  # Continuous call mode — hands-free conversation like a phone call
+  call_mode:
+    enabled: true
+    interrupt_on_speech: true
+    auto_greet: true
+
+memory:
+  working_memory_size: 100
+  episodic:
+    collection: "vega_episodes"
+  procedural:
+    db_path: "./data/procedural.db"
+  knowledge_graph:
+    persist_path: "./data/knowledge_graph.json"
+  chat_persistence:
+    enabled: true
+    auto_recall: true
+    recall_count: 5
+    db_path: "./data/chat_history.db"
+  # RAG over local files — ask questions about your documents
+  rag:
+    enabled: true
+    index_dir: "./data/rag_index"
+    watch_dirs: []        # add folder paths you want indexed
+    embedding_model: "nomic-embed-text"   # Ollama embedding (free)
+    chunk_size: 512
+    chunk_overlap: 64
+    top_k: 5
+
+# Text-to-video — 2026 state-of-the-art, 100% FREE
+video:
+  enabled: true
+  # Default to local Wan2 since HF deprecated their free video inference in 2025.
+  # After install_video_deps.bat runs, this generates unlimited free videos on your RTX 4060.
+  default_provider: "wan2"
+  output_dir: "./data/videos"
+  default_resolution: "1920x1080"
+  default_duration: 5
+  default_fps: 24
+  upscale_to_hd: true
+
+  providers:
+    # ─── LOCAL (GPU — unlimited, no key, RTX 4060 8GB) ───
+    wan2:
+      label: "Wan 2.1 T2V-1.3B (Best 8GB, diffusers)"
+      type: local
+      free: true
+      # Capital-D is the canonical HF repo name (lowercase redirects to it, causes re-download)
+      model_id: "Wan-AI/Wan2.1-T2V-1.3B-Diffusers"
+      model_id_small: "Wan-AI/Wan2.1-T2V-1.3B-Diffusers"
+      vram_needed: 8
+      pipeline: "wan"
+    cogvideox:
+      label: "CogVideoX-2B (Quantized 8GB)"
+      type: local
+      free: true
+      model_id: "THUDM/CogVideoX-2b"
+      vram_needed: 6
+      pipeline: "cogvideox"
+    ltx:
+      label: "LTX-Video 0.9 (Fastest local)"
+      type: local
+      free: true
+      model_id: "Lightricks/LTX-Video"
+      vram_needed: 8
+      pipeline: "ltx"
+    animatediff:
+      label: "AnimateDiff (Light, 6GB)"
+      type: local
+      free: true
+      model_id: "guoyww/animatediff-motion-adapter-v1-5-3"
+      base_model: "runwayml/stable-diffusion-v1-5"
+      vram_needed: 6
+      pipeline: "animatediff"
+
+    # ─── CLOUD (FREE — no credit card) ───
+    huggingface:
+      label: "HuggingFace API (Free, no limit)"
+      type: cloud
+      free: true
+      env_key: "HF_API_KEY"
+      # damo-vilab/text-to-video-ms-1.7b was removed in 2025. Using current working endpoints:
+      # Note: HF free video inference was deprecated in 2025. These may 403/404.
+      # Use local providers (wan2/cogvideox/ltx/animatediff) via install_video_deps.bat instead.
+      endpoints:
+        - "https://router.huggingface.co/fal-ai/fal-ai/ltx-video"
+        - "https://api-inference.huggingface.co/models/Lightricks/LTX-Video"
+    zsky:
+      label: "ZSky AI (1080p + audio, Free)"
+      type: cloud
+      free: true
+      env_key: "ZSKY_API_KEY"
+      endpoint: "https://api.zsky.ai/v1/videos"
+    json2video:
+      label: "JSON2Video (600s/month Free)"
+      type: cloud
+      free: true
+      env_key: "JSON2VIDEO_API_KEY"
+      endpoint: "https://api.json2video.com/v2/movies"
+    luma:
+      label: "Luma Dream Machine (Free tier 5/mo)"
+      type: cloud
+      free: true
+      limit: "5/month"
+      env_key: "LUMA_API_KEY"
+
+# Local image generation (free) — drives image->video pipelines
+image:
+  enabled: true
+  # sdxl_turbo is the safe default — no HF login or license gate required.
+  # flux_schnell requires accepting the license at huggingface.co/black-forest-labs/FLUX.1-schnell
+  # and running: huggingface-cli login
+  default_provider: "sdxl_turbo"
+  output_dir: "./data/images"
+  providers:
+    flux_schnell:
+      label: "Flux.1-schnell (Fast local 8GB — needs HF login)"
+      type: local
+      free: true
+      model_id: "black-forest-labs/FLUX.1-schnell"
+      vram_needed: 8
+      requires_hf_login: true
+    sdxl_turbo:
+      label: "SDXL Turbo (1-step local)"
+      type: local
+      free: true
+      model_id: "stabilityai/sdxl-turbo"
+      vram_needed: 6
+    huggingface:
+      label: "HuggingFace API (Legacy — use local instead)"
+      type: cloud
+      free: true
+      env_key: "HF_API_KEY"
+      # Note: HF removed free image inference in 2025. Use local providers after install_video_deps.bat.
+      # These are kept as fallback attempts only.
+      endpoints:
+        - "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell"
+        - "https://router.huggingface.co/fal-ai/fal-ai/flux/schnell"
+
+# Autonomous browser agent (Playwright)
+browser:
+  enabled: true
+  headless: false                # show the window so you see what VEGA does
+  user_data_dir: "./data/browser_profile"
+  default_timeout: 30000
+
+# MCP server — expose VEGA tools to Claude Desktop / other MCP clients
+mcp:
+  enabled: true
+  transport: "stdio"             # stdio | sse
+  expose_agents:
+    - research
+    - code
+    - memory
+    - browser
+    - video
+    - image
+    - rag
+
+# Boot sound
+boot:
+  sound_enabled: true
+  sound_file: "/static/sounds/boot/System - Pop Up Sound Effect ｜ Solo leveling [K6hPM5xedkw].webm"
+  volume: 0.7
+
+hud:
+  port: 8888
+  host: "127.0.0.1"
+
+scheduler:
+  evolution_interval_hours: 6
+  health_check_interval_minutes: 5
+
+# Self-improvement — auto-generates skills when a request repeats
+evolution:
+  enabled: true
+  auto_skill_threshold: 3        # after 3 similar requests, write a skill
+  auto_skill_similarity: 0.85
+  skill_dir: "./skills/generated"
+
+security:
+  require_approval_for:
+    - "file_delete"
+    - "system_command"
+    - "send_email"
+    - "financial_transaction"
+  snapshot_retention: 20

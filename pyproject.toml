@@ -1,0 +1,21 @@
+[project]
+name = "vega-ai"
+version = "1.0.0"
+description = "VEGA — Autonomous AI Operating System"
+requires-python = ">=3.11"
+license = {text = "Private"}
+authors = [{name = "Masood"}]
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
