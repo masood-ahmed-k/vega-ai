@@ -8,7 +8,7 @@
    V    EEEEE  GGGG   A   A
 ```
 
-# VEGA AI — Autonomous AI Operating System
+# VEGA AI: Autonomous AI Operating System
 
 **The world's most powerful 100% FREE, fully local AI assistant.**  
 Multi-agent system • Solo Leveling RPG HUD • Real-time streaming • Text-to-video • Browser automation
@@ -25,7 +25,7 @@ Multi-agent system • Solo Leveling RPG HUD • Real-time streaming • Text-to
 
 ## What is VEGA?
 
-VEGA is an **autonomous AI operating system** that runs entirely on your local machine — no API keys, no subscriptions, no cloud required. It combines a multi-agent AI backend with a Solo Leveling–inspired RPG HUD, giving you a mission-control interface for real tasks: browsing the web, writing code, generating images & videos, managing files, and more.
+VEGA is an **autonomous AI operating system** that runs entirely on your local machine. No API keys, no subscriptions, no cloud required. It combines a multi-agent AI backend with a Solo Leveling–inspired RPG HUD, giving you a mission-control interface for real tasks: browsing the web, writing code, generating images & videos, managing files, and more.
 
 > **Hardware tested on:** RTX 4060 8GB · 32GB RAM · i7-13650HX  
 > Works on any modern GPU with 6GB+ VRAM.
@@ -34,19 +34,19 @@ VEGA is an **autonomous AI operating system** that runs entirely on your local m
 
 ## Screenshots
 
-### Main HUD — Shadow Army & Command Interface
+### Main HUD: Shadow Army & Command Interface
 ![VEGA HUD Main](docs/screenshots/hud-main.png)
 
-### Live Chat — Real-time Token Streaming
+### Live Chat: Real-time Token Streaming
 ![VEGA Chat](docs/screenshots/hud-chat.png)
 
-### Video Studio — 8 FREE Providers (4 Local + 4 Cloud)
+### Video Studio: 8 FREE Providers (4 Local + 4 Cloud)
 ![Video Studio](docs/screenshots/hud-video.png)
 
-### Browser Agent — Autonomous Web Browsing
+### Browser Agent: Autonomous Web Browsing
 ![Browser Agent](docs/screenshots/hud-browse.png)
 
-### Files & RAG — Ask Questions About Your Documents
+### Files & RAG: Ask Questions About Your Documents
 ![RAG Files](docs/screenshots/hud-files.png)
 
 ---
@@ -56,7 +56,7 @@ VEGA is an **autonomous AI operating system** that runs entirely on your local m
 ### 🤖 Multi-Agent System (Shadow Army)
 | Agent | What it does |
 |---|---|
-| **Planner** | Master orchestrator — decomposes tasks across all agents |
+| **Planner** | Master orchestrator: decomposes tasks across all agents |
 | **Research** | Deep web research & synthesis |
 | **Code** | Writes, debugs, and explains code |
 | **Browser** | Autonomous Playwright web browsing |
@@ -72,7 +72,7 @@ VEGA is an **autonomous AI operating system** that runs entirely on your local m
 | **System Monitor** | CPU/RAM/disk monitoring & alerts |
 
 ### ⚡ Real-Time Token Streaming
-Responses stream token-by-token — first token appears in ~3 seconds, not 60. Built on Ollama's streaming API with WebSocket delivery to the HUD.
+Responses stream token-by-token. First token appears in ~3 seconds, not 60. Built on Ollama's streaming API with WebSocket delivery to the HUD.
 
 ### 🎬 Text-to-Video (8 FREE Providers)
 | Provider | Type | VRAM |
@@ -81,38 +81,38 @@ Responses stream token-by-token — first token appears in ~3 seconds, not 60. B
 | **CogVideoX-2B** | Local GPU | 6GB |
 | **LTX-Video 0.9** | Local GPU | 8GB |
 | **AnimateDiff** | Local GPU | 6GB |
-| **HuggingFace API** | Cloud Free | — |
-| **ZSky AI** | Cloud Free | — |
-| **JSON2Video** | Cloud Free | — |
-| **Luma Dream Machine** | Cloud Free (5/mo) | — |
+| **HuggingFace API** | Cloud Free | - |
+| **ZSky AI** | Cloud Free | - |
+| **JSON2Video** | Cloud Free | - |
+| **Luma Dream Machine** | Cloud Free (5/mo) | - |
 
 ### 🖼️ Image Generation
-- **SDXL Turbo** — 1-step local generation, no login needed
-- **Flux.1-schnell** — State-of-the-art local quality (requires HF login)
-- **HuggingFace API** — Cloud fallback
+- **SDXL Turbo**: 1-step local generation, no login needed
+- **Flux.1-schnell**: State-of-the-art local quality (requires HF login)
+- **HuggingFace API**: Cloud fallback
 
 ### 🌐 Browser Agent
-Playwright-powered autonomous browser — fills forms, scrapes pages, clicks buttons, takes screenshots. VEGA drives Chrome so you don't have to.
+Playwright-powered autonomous browser. Fills forms, scrapes pages, clicks buttons, takes screenshots. VEGA drives Chrome so you don't have to.
 
-### 📚 RAG — Ask Your Documents
+### 📚 RAG: Ask Your Documents
 Index any folder of PDFs, TXTs, or code files. Ask VEGA questions about them using local Ollama embeddings (`nomic-embed-text`). No cloud, no cost.
 
 ### 🧠 Persistent Memory
-- **Episodic** — remembers past conversations via ChromaDB vector search
-- **Procedural** — preferences, XP, level stored in SQLite
-- **Knowledge Graph** — entity & relationship tracking
+- **Episodic**: remembers past conversations via ChromaDB vector search
+- **Procedural**: preferences, XP, level stored in SQLite
+- **Knowledge Graph**: entity & relationship tracking
 
 ### 🎮 Solo Leveling RPG HUD
-- **Hunter Card** — your character with rank, level & XP bar
-- **Shadow Army** — live agent status & success rates
-- **Metrics Panel** — quests completed, success rate, active model, memory fragments
-- **Resources** — real-time CPU / RAM / disk bars
-- **Activity Log** — timestamped event feed
-- **Model Switcher** — swap AI models from the HUD dropdown
-- **XP System** — earn XP on every task, level up automatically
+- **Hunter Card**: your character with rank, level & XP bar
+- **Shadow Army**: live agent status & success rates
+- **Metrics Panel**: quests completed, success rate, active model, memory fragments
+- **Resources**: real-time CPU / RAM / disk bars
+- **Activity Log**: timestamped event feed
+- **Model Switcher**: swap AI models from the HUD dropdown
+- **XP System**: earn XP on every task, level up automatically
 
 ### 🔌 MCP Server
-Expose VEGA's agents as tools to **Claude Desktop** or any MCP client. Research, code, memory, browser, video — all available via MCP.
+Expose VEGA's agents as tools to **Claude Desktop** or any MCP client. Research, code, memory, browser, video: all available via MCP.
 
 ### 🧬 Self-Evolution
 VEGA tracks repeated requests and auto-generates new skills after 3 similar tasks. The evolution engine writes Python skill files on its own.
@@ -154,7 +154,7 @@ pip install -r requirements.txt
 # Fast & efficient (recommended for 8GB VRAM)
 ollama pull qwen3:8b
 
-# Balanced quality/speed (MoE — uses less VRAM than size suggests)
+# Balanced quality/speed (MoE, uses less VRAM than size suggests)
 ollama pull qwen3:30b-a3b
 
 # Maximum quality (needs 20GB+ RAM)
@@ -185,7 +185,7 @@ All settings live in `config/settings.yaml`. The most important ones:
 ### Your Name
 ```yaml
 system:
-  user: "Hunter"   # Change this to your name — shows up in the HUD
+  user: "Hunter"   # Change this to your name (shows up in the HUD)
 ```
 
 ### AI Model
@@ -250,13 +250,13 @@ cp .env.example .env
 ```
 
 ```env
-# Optional — only needed for cloud providers
+# Optional: only needed for cloud providers
 HF_API_KEY=hf_...          # HuggingFace (video/image cloud fallback)
 ZSKY_API_KEY=...            # ZSky video
 JSON2VIDEO_API_KEY=...      # JSON2Video
 LUMA_API_KEY=...            # Luma Dream Machine
 
-# Optional — for cloud AI models
+# Optional: for cloud AI models
 OPENAI_API_KEY=sk-...
 ANTHROPIC_API_KEY=sk-ant-...
 GOOGLE_API_KEY=...
@@ -341,7 +341,7 @@ ws.onmessage = (e) => {
 
 ```
 vega-ai/
-├── main.py                    # Entry point — boots everything
+├── main.py                    # Entry point: boots everything
 ├── config/
 │   └── settings.yaml          # All configuration
 ├── agents/                    # 14 specialized AI agents
@@ -354,7 +354,7 @@ vega-ai/
 ├── api/
 │   └── __init__.py            # FastAPI REST + WebSocket server
 ├── core/
-│   ├── command_core.py        # Central brain — connects all subsystems
+│   ├── command_core.py        # Central brain: connects all subsystems
 │   ├── evolution.py           # Self-improvement engine
 │   └── event_bus.py           # Async pub/sub
 ├── models/
@@ -422,7 +422,7 @@ scripts\restart.bat   # kills old process and restarts
 ```
 
 **First response is slow (>10s)**  
-Normal on cold start — model loads into VRAM. Enable `preload_on_start: true` in settings.yaml to pre-warm the model on every boot.
+On cold start, the model loads into VRAM. Enable `preload_on_start: true` in settings.yaml to pre-warm the model on every boot.
 
 ---
 
@@ -435,17 +435,17 @@ Normal on cold start — model loads into VRAM. Enable `preload_on_start: true` 
 | Streaming | Ollama streaming API → async generator → WebSocket |
 | Memory | ChromaDB (vector) + SQLite (procedural) + NetworkX (KG) |
 | Browser | Playwright (Chromium) |
-| Image Gen | diffusers — SDXL Turbo / Flux.1-schnell |
-| Video Gen | diffusers — Wan2, CogVideoX, LTX, AnimateDiff |
+| Image Gen | diffusers: SDXL Turbo / Flux.1-schnell |
+| Video Gen | diffusers: Wan2, CogVideoX, LTX, AnimateDiff |
 | RAG | nomic-embed-text (Ollama) + HNSW vector index |
-| HUD | Vanilla HTML/CSS/JS — Solo Leveling RPG theme |
+| HUD | Vanilla HTML/CSS/JS: Solo Leveling RPG theme |
 | MCP | Model Context Protocol (stdio transport) |
 
 ---
 
 ## License
 
-MIT — free to use, modify, and distribute.
+MIT. Free to use, modify, and distribute.
 
 ---
 
